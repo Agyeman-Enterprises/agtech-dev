@@ -1,0 +1,72 @@
+name: Job Card
+description: File a new Job Card in AGtech format
+title: "[CARD] "
+labels: ["job-card"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A Job Card is the atomic unit of work in AGtech. Fill in all required fields. The AI loop picks this up from `created` state.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Card Type
+      description: Is this a new capability or a fix to something broken?
+      options:
+        - new_build
+        - issue_fix
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How urgent is this work?
+      options:
+        - low
+        - medium
+        - high
+        - critical
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Context for the AI. Not scope — scope gets defined in the SPEC. What is the background, the trigger, the user pain?
+      placeholder: "Users reported that... / The current behavior is... / This is needed because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: intent
+    attributes:
+      label: Intent (what done looks like)
+      description: One or two sentences. What should be true when this card is shipped? This seeds the spec.
+      placeholder: "When complete, a user should be able to... / The system should..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of Scope (optional)
+      description: Anything you explicitly do NOT want the AI to touch or build as part of this card.
+      placeholder: "Do not change the auth flow. / Leave the reporting UI unchanged."
+
+  - type: textarea
+    id: regression_guard
+    attributes:
+      label: Regression Guard (optional)
+      description: Existing behaviors that must not break. Be specific.
+      placeholder: "Sprint board must continue to render. / Existing card states must be preserved."
+
+  - type: input
+    id: sprint_id
+    attributes:
+      label: Sprint ID (optional)
+      description: Leave blank if not yet assigned to a sprint.
+      placeholder: "uuid"
