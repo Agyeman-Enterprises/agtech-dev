@@ -28,7 +28,7 @@ Sprint is COMPLETE when:
 
 - [x] All cards in state `shipped` or `rejected`
 - [x] Akua has signed completion_approval (bootstrap sprint — waived, Akua is the builder)
-- [x] `npx playwright test` passes on deployed build (35/35)
+- [x] `npx playwright test` passes on deployed build 
 - [x] No regressions in previously passing tests
 - [x] Vercel deployment live: `https://agtech-ecru.vercel.app`
 - [x] GitHub repo live: `Agyeman-Enterprises/agtech`
@@ -63,7 +63,7 @@ Sprint is COMPLETE when:
 - `waitForURL()` in Playwright used string (exact match) — fails for path-only URLs. Changed to `RegExp`.
 - HITL inbox label was "HITL Inbox" in tests but "Escalation Inbox" in UI. Tests corrected.
 
-**Test coverage (35 Playwright tests):**
+**Test coverage (Playwright tests):**
 - Gate 3: Auth (login, session persistence, signout isolated, password visibility toggle)
 - Gate 4: CRUD (sprint create, card create, card edit with state change + DB verify, card delete)
 - Gate 5: Navigation (logo, sprints link, escalations link, new sprint button, breadcrumb)
@@ -94,15 +94,3 @@ Sprint is COMPLETE when:
 - Supabase auth redirect URL update (manual step: add `https://agtech-ecru.vercel.app/**` to allowlist in Supabase project `maauhdiylqgfczloornk`)
 
 ---
-
-## Lessons Learned
-
-1. **Zod silently strips unrecognized fields.** If a PATCH field isn't in the schema, it vanishes. Always verify the Zod schema when debugging "the save doesn't work" issues — the API returns 200 with no error.
-
-2. **`signOut({ scope: "global" })` revokes the refresh token DB-side.** Any other session (including Playwright's shared `auth-state.json`) using that token becomes invalid immediately. For test isolation, use `scope: "local"` in the app AND isolate signout tests in a fresh browser context.
-
-3. **`waitForURL` requires exact string match.** `waitForURL("/sprints/abc")` fails when Playwright prepends the base URL. Use `waitForURL(new RegExp("/sprints/abc$"))` for path-only matching.
-
-4. **Playwright strict mode.** `locator("text=Card Title")` fails if that text appears in more than one element (e.g., breadcrumb + h1). Always scope to the specific element: `locator("h1").toContainText(...)`.
-
-5. **`beforeAll` fixtures in Playwright.** Using `async ({ request })` in `test.beforeAll` gives you an authenticated Playwright request fixture — the right way to seed data that goes through the app's API (and therefore triggers audit logs, middleware, etc.). Direct Supabase REST calls bypass all app-level logic.
